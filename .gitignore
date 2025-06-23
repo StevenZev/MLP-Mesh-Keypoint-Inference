@@ -4,7 +4,7 @@ Caps/
 Guitars/
 *.ply
 *.json
-
+*.Identifier
 
 
 # Template Below
