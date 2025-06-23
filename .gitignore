@@ -1,3 +1,14 @@
+guitar_test/
+cap_test
+Caps/
+Guitars/
+*.ply
+*.json
+
+
+
+# Template Below
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
