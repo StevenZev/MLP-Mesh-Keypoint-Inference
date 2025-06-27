@@ -20,7 +20,7 @@ class get_model(nn.Module):
         self.drop1 = nn.Identity() #replace dropout with identity for testing
         self.fc2 = nn.Linear(512, 256)
         #self.bn2 = nn.BatchNorm1d(256)
-        #self.drop2 = nn.Dropout(0.3)
+        #self.drop2 = nn.Dropout(0.2)
         self.drop2 = nn.Identity()
         self.fc3 = nn.Linear(256, self.num_keypoints * 3)
 
@@ -37,10 +37,12 @@ class get_model(nn.Module):
         l3_xyz, l3_points = self.sa3(l2_xyz, l2_points)
 
         x = l3_points.view(B, 1024)
-        #x = self.drop1(F.relu(self.bn1(self.fc1(x))))
-        #x = self.drop2(F.relu(self.bn2(self.fc2(x))))
-        x = F.relu(self.fc1(x)) #same as below
-        x = F.relu(self.fc2(x)) #changed for no-droupout
+        #x = self.drop1(F.relu(self.bn1(self.fc1(x)))) #dropout and batch norm
+        #x = self.drop1(F.relu(self.fc1(x))) #Dropout, no batch norm
+        x = F.relu(self.fc1(x)) #changed for no-droupout or batch norm
+        #x = self.drop2(F.relu(self.bn2(self.fc2(x)))) #dropout and batch norm
+        #x = self.drop2(F.relu(self.fc2(x))) #Dropout, no batch norm
+        x = F.relu(self.fc2(x)) #changed for no-droupout or batch norm
         x = self.fc3(x)
         x = x.view(B, self.num_keypoints, 3)  # reshape to keypoint coordinates
 
