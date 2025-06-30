@@ -15,13 +15,13 @@ class get_model(nn.Module):
         self.sa3 = PointNetSetAbstraction(npoint=None, radius=None, nsample=None, in_channel=256 + 3, mlp=[256, 512, 1024], group_all=True)
 
         self.fc1 = nn.Linear(1024, 512)
-        #self.bn1 = nn.BatchNorm1d(512) #remove batchnorm for testing
-        #self.drop1 = nn.Dropout(0.2)
-        self.drop1 = nn.Identity() #replace dropout with identity for testing
+        self.bn1 = nn.BatchNorm1d(512) #remove batchnorm for testing
+        self.drop1 = nn.Dropout(0.3)
+        #self.drop1 = nn.Identity() #replace dropout with identity for testing
         self.fc2 = nn.Linear(512, 256)
-        #self.bn2 = nn.BatchNorm1d(256)
-        #self.drop2 = nn.Dropout(0.2)
-        self.drop2 = nn.Identity()
+        self.bn2 = nn.BatchNorm1d(256)
+        self.drop2 = nn.Dropout(0.4)
+        #self.drop2 = nn.Identity()
         self.fc3 = nn.Linear(256, self.num_keypoints * 3)
 
     def forward(self, xyz):
@@ -37,12 +37,14 @@ class get_model(nn.Module):
         l3_xyz, l3_points = self.sa3(l2_xyz, l2_points)
 
         x = l3_points.view(B, 1024)
+        x = self.drop1(F.gelu(self.bn1(self.fc1(x))))
         #x = self.drop1(F.relu(self.bn1(self.fc1(x)))) #dropout and batch norm
         #x = self.drop1(F.relu(self.fc1(x))) #Dropout, no batch norm
-        x = F.relu(self.fc1(x)) #changed for no-droupout or batch norm
+        #x = F.relu(self.fc1(x)) #changed for no-droupout or batch norm
+        x = self.drop2(F.gelu(self.bn2(self.fc2(x))))
         #x = self.drop2(F.relu(self.bn2(self.fc2(x)))) #dropout and batch norm
         #x = self.drop2(F.relu(self.fc2(x))) #Dropout, no batch norm
-        x = F.relu(self.fc2(x)) #changed for no-droupout or batch norm
+        #x = F.relu(self.fc2(x)) #changed for no-droupout or batch norm
         x = self.fc3(x)
         x = x.view(B, self.num_keypoints, 3)  # reshape to keypoint coordinates
 
