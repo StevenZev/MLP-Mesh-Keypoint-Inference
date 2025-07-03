@@ -3,9 +3,9 @@ import torch.nn.functional as F
 from pointnet2_utils import PointNetSetAbstraction
 
 
-class get_model(nn.Module):
+class get_new_model(nn.Module):
     def __init__(self, num_keypoints, normal_channel=True):
-        super(get_model, self).__init__()
+        super(get_new_model, self).__init__()
         in_channel = 6 if normal_channel else 3
         self.normal_channel = normal_channel
         self.num_keypoints = num_keypoints
